@@ -132,7 +132,7 @@ service "jenkins" do
   action :nothing
 end
 
-ruby_block "block_until_operational" do
+ruby_block "jenkins_block_until_operational" do
   block do
     until IO.popen("netstat -lnt").entries.select { |entry|
         entry.split[3] =~ /:#{node['jenkins']['server']['port']}$/
@@ -155,7 +155,7 @@ end
 log "jenkins: install and start" do
   notifies :install, "package[jenkins]", :immediately
   notifies :start, "service[jenkins]", :immediately unless node['jenkins']['install_starts_service']
-  notifies :create, "ruby_block[block_until_operational]", :immediately
+  notifies :create, "ruby_block[jenkins_block_until_operational]", :immediately
   not_if do
     File.exists?(node['jenkins']['war_file'])
   end
@@ -163,7 +163,7 @@ end
 
 unless node['jenkins']['sysconf_template'].nil?
   template node['jenkins']['sysconf_template'] do
-    notifies :restart, "service[jenkins]", :immediately 
+    notifies :restart, "service[jenkins]", :immediately
   end
 end
 
@@ -176,7 +176,7 @@ log "plugins updated, restarting jenkins" do
   notifies :stop, "service[jenkins]", :immediately
   notifies :create, "ruby_block[netstat]", :immediately
   notifies :start, "service[jenkins]", :immediately
-  notifies :create, "ruby_block[block_until_operational]", :immediately
+  notifies :create, "ruby_block[jenkins_block_until_operational]", :immediately
   only_if do
     if File.exists?(node['jenkins']['pid_file'])
       htime = File.mtime(node['jenkins']['pid_file'])
