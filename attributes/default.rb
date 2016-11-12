@@ -32,18 +32,20 @@ default['jenkins']['ajp_port'] = -1
 default['jenkins']['sysconf_template']
 default['jenkins']['pid_file']
 default['jenkins']['war_file']
+default['jenkins']['install_java'] = true
+
 
 case node['platform']
 when "debian", "ubuntu"
-  default['jenkins']['sysconf_template'] = "/etc/default/jenkins" 
+  default['jenkins']['sysconf_template'] = "/etc/default/jenkins"
   default['jenkins']['server']['group'] = "nogroup"
   default['jenkins']['install_starts_service'] = true
   default['jenkins']['pid_file'] = "/var/run/jenkins/jenkins.pid"
   default['jenkins']['war_file'] = "/usr/share/jenkins/jenkins.war"
 when "redhat", "centos", "scientific", "amazon"
   default['jenkins']['sysconf_template'] = "/etc/sysconfig/jenkins"
-  default['jenkins']['install_starts_service'] = true 
-  default['jenkins']['server']['group'] = node['jenkins']['server']['user'] 
+  default['jenkins']['install_starts_service'] = true
+  default['jenkins']['server']['group'] = node['jenkins']['server']['user']
   default['jenkins']['pid_file'] = "/var/run/jenkins.pid"
   default['jenkins']['war_file'] = "/usr/lib/jenkins/jenkins.war"
 else
@@ -137,6 +139,6 @@ default['jenkins']['http_proxy']['listen_ports']         = [ 80 ]
 default['jenkins']['http_proxy']['host_name']            = nil
 default['jenkins']['http_proxy']['host_aliases']         = []
 default['jenkins']['http_proxy']['client_max_body_size'] = "1024m"
-default['jenkins']['http_proxy']['basic_auth'] = true 
+default['jenkins']['http_proxy']['basic_auth'] = true
 default['jenkins']['http_proxy']['basic_auth_username'] = "jenkins"
 default['jenkins']['http_proxy']['basic_auth_password'] = "jenkins"

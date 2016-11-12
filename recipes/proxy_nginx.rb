@@ -47,6 +47,12 @@ template "#{node['nginx']['dir']}/sites-available/jenkins.conf" do
   end
 end
 
+nginx_site "000-default" do
+  enable false
+  only_if { ::File.exists?("#{node['nginx']['dir']}/sites-enabled/000-default") }
+  only_if { node['jenkins']['http_proxy']['variant'] == "nginx" }
+end
+
 nginx_site "jenkins.conf" do
   if node['jenkins']['http_proxy']['variant'] == "nginx"
     enable true
